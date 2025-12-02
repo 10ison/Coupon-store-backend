@@ -1,3 +1,2 @@
 <?php
-echo "Backend Running";
-?>
+echo "Backend Live";
