@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Buy Coupons</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<style>
+body{font-family:Arial;background:#f7f7f7;margin:0;padding:20px;}
+.card{background:#fff;padding:15px;border-radius:8px;box-shadow:0 0 5px #0001;margin-bottom:20px;}
+button{padding:10px 15px;background:#111;color:#fff;border:none;border-radius:5px;}
+select,input{padding:10px;width:100%;margin-bottom:10px;border-radius:5px;border:1px solid #ccc;}
+</style>
+</head>
+
+<body>
+<h2>Buy Digital Coupons</h2>
+
+<div class="card">
+  <label>Choose Coupon Type</label>
+  <select id="type"></select>
+
+  <label>Quantity</label>
+  <input id="qty" type="number" value="1"/>
+
+  <button onclick="createPayment()">Buy Now</button>
+</div>
+
+<script>
+async function loadCoupons(){
+  let r = await fetch("api.php?action=list");
+  let d = await r.json();
+  let sel = document.getElementById("type");
+  d.forEach(x=>{
+    sel.innerHTML += `<option value="${x.coupon_type}">${x.coupon_type} (${x.available})</option>`;
+  })
+}
+
+async function createPayment(){
+  let type = document.getElementById("type").value;
+  let qty = document.getElementById("qty").value;
+
+  let send = await fetch("api.php?action=create",{
+    method:"POST",
+    body:JSON.stringify({coupon_type:type,quantity:qty})
+  });
+
+  let res = await send.json();
+
+  window.location.href = res.payment_link;
+}
+
+loadCoupons();
+</script>
+
+</body>
+</html>
